@@ -1,0 +1,122 @@
+* {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+    background-color: #8a8a8a;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.printOut {
+    z-index: 0;
+    position: absolute;
+    bottom: 100%;
+    resize: none;
+    background-color: #fff;
+    height: 35px;
+    width: 315px;
+    border-bottom: 5px solid #000;
+    padding-top: 3px;
+    padding-right: 10px;
+}
+
+.printOut > p {
+    text-align: end;
+    font-size: 22px;
+    font-family: 'Fake Receipt', sans-serif;
+}
+
+.calcContainer {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background-color: #EEF1DB;
+    padding: 15px;
+    width: fit-content;
+    border: 5px solid #000;
+    border-radius: 10px;
+}
+
+.screenContainer {
+    width: 315px;
+    height: 75px;
+    border: 2px solid #000;
+    border-radius: 5px;
+    background-color: #D8D8D8;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 10px;
+}
+
+#screen {
+    font-family: 'Seven Segment', sans-serif;
+    font-size: 48px;
+}
+
+.buttonRow {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.inputButton {
+    width: 75px;
+    background-color: #eeeee8;
+}
+
+#ceButton, #equalButton {
+    width: 155px;
+}
+
+.inputButton {
+    position: relative;
+    top: 0px;
+    height: 75px;
+    font-size: 32px;
+    border-radius: 5px;
+    box-shadow: 0px 5px 0px #c4c4c4;
+    border: 1px solid #c4c4c4;
+    text-shadow: 1px 1px 1px #fff;
+    transition: All 250ms ease;
+}
+
+.inputButton:active {
+    position: relative;
+    top: 5px;
+    box-shadow: none;
+    transition: All 250ms ease;
+}
+
+#divButton, #mulButton, #minButton,
+#plusButton, #equalButton {
+    background-color: #485B63;
+    color: #fff;
+}
+
+#ceButton {
+    background-color: #cc0000;
+    color:#fff
+}
+
+.header, .footer {
+    z-index: 1;
+    background-color: #000;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
+}
