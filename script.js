@@ -10,6 +10,7 @@ inputButtons.forEach(function (i) {
     i.addEventListener('click', () => inputRouting(i.id));
 });
 const screen = document.getElementById('screen');
+const receiptPaper = document.querySelector('.receiptPaper');
 
 function inputRouting(userInput) {
     if (!numSwitch) inputProcess(userInput, xNum);
@@ -27,6 +28,10 @@ function inputProcess(userInput, currNum) {
         case "negative":
             currNum = (+currNum * -1).toString();
             break;
+        // case "delete":
+        //     if (!numSwitch) xNum.slice(0, -1);
+        //     else yNum.slice(0, -1);
+        //     break;
         case "clear":
             currNum = "0";
             clear();
@@ -83,4 +88,14 @@ function operate() {
     zNum = zNum.toString();
     xNum = zNum;
     screen.innerText = zNum;
+    printOut(yNum);
+}
+
+
+function printOut(printText){
+    const newLine = document.createElement('p');
+    newLine.innerText = printText;
+    receiptPaper.appendChild(newLine);
+    let receiptHeight = receiptPaper.offsetHeight + 26;
+    receiptPaper.setAttribute('style', `height: ${receiptHeight}px`);
 }

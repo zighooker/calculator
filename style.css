@@ -19,20 +19,21 @@ body {
     justify-content: center;
 }
 
-.printOut {
+.receiptPaper {
     z-index: -1;
     position: absolute;
     bottom: 100%;
     resize: none;
     background-color: #fff;
-    height: 35px;
-    width: 315px;
+    height: 5px;
+    width: 215px;
     border-bottom: 5px solid #000;
     padding-top: 3px;
     padding-right: 10px;
+    transition: all 500ms ease;
 }
 
-.printOut > p {
+.receiptPaper > p {
     text-align: end;
     font-size: 22px;
     font-family: 'Fake Receipt', sans-serif;
@@ -79,7 +80,7 @@ body {
     background-color: #eeeee8;
 }
 
-#clear, #equals {
+#equals {
     width: 155px;
 }
 
@@ -107,15 +108,19 @@ body {
     color: #fff;
 }
 
-#clear {
+#clear, #delete {
     background-color: #cc0000;
     color:#fff
 }
 
-.header, .footer {
+.footer {
     z-index: 1;
     background-color: #000;
     color: #fff;
+    font-size: 20px;
     padding: 15px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
