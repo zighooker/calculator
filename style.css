@@ -20,7 +20,7 @@ body {
 }
 
 .printOut {
-    z-index: 0;
+    z-index: -1;
     position: absolute;
     bottom: 100%;
     resize: none;
@@ -79,7 +79,7 @@ body {
     background-color: #eeeee8;
 }
 
-#ceButton, #equalButton {
+#clear, #equals {
     width: 155px;
 }
 
@@ -102,13 +102,12 @@ body {
     transition: All 250ms ease;
 }
 
-#divButton, #mulButton, #minButton,
-#plusButton, #equalButton {
+.opButton {
     background-color: #485B63;
     color: #fff;
 }
 
-#ceButton {
+#clear {
     background-color: #cc0000;
     color:#fff
 }
