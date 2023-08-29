@@ -2,6 +2,7 @@ let currVal = "0";
 let operator = null;
 let xOperand = null;
 let operandInput = false;
+let resultShown = false;
 
 // sets up buttons with listeners
 const inputButtons = Array.from(document.getElementsByClassName('inputButton'));
@@ -34,12 +35,15 @@ function inputRouting(userInput) {
 }
 
 function numberInput(userInput) {
-    if (operandInput) {
+    if (resultShown) {
+        clear();
+        currVal = userInput;
+    } else if (operandInput) {
         currVal = userInput;
         operandInput = false;
     } else if ((userInput === "0" && currVal === "0")
-                || currVal.length >= 12) {
-        return;
+        || currVal.length >= 12) {
+            return;
     } else if (currVal === "0") {
         currVal = userInput;
     } else {
@@ -60,6 +64,7 @@ function clear() {
     xOperand = null;
     operator = null;
     operandInput = false;
+    resultShown = false;
     printOut(`\xa0`)
     updateScreen();
 }
@@ -75,11 +80,21 @@ function decimal() {
         currVal = "0.";
         operandInput = false;
     }
+    if (resultShown) {
+        clear();
+        currVal = "0.";
+    }
     if (!currVal.includes(".")) currVal += ".";
     updateScreen();
 }
 
 function setOperator(userInput) {
+    if (operator && operandInput && userInput !== "eq") {
+        operator = userInput;
+        updateScreen(userInput);
+        return;
+    }
+
     // if (userInput !== "=") 
     updateScreen(userInput);
     // printOut(`${currVal} ${userInput}`);
@@ -88,7 +103,7 @@ function setOperator(userInput) {
     else if (operator) executeOperator();
 
     operandInput = true;
-    if (!userInput === "eq") operator = userInput;
+    if (userInput !== "eq") operator = userInput;
 }
 
 function executeOperator() {
@@ -97,10 +112,12 @@ function executeOperator() {
 
     // checks if result is over max length of display
     resultVal = parseFloat(resultVal.toFixed(8));
-    if (resultVal.toString().length >= 12) resultVal = resultVal.toExponential(6);
+    if (resultVal.toString().length >= 12) 
+        resultVal = resultVal.toExponential(6);
     resultVal = resultVal.toString()
 
     xOperand = resultVal;
+    resultShown = true;
     updateScreen(resultVal);
     setTimeout(() => {printOut(resultVal);}, 250);
 }
