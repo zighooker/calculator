@@ -1,6 +1,7 @@
-let numArray = ["0"];
-let displayResult = false;
-let operator;
+let currVal = "0";
+let operator = null;
+let xOperand = null;
+let operandInput = false;
 
 // sets up buttons with listeners
 const inputButtons = Array.from(document.getElementsByClassName('inputButton'));
@@ -26,103 +27,82 @@ function inputRouting(userInput) {
                 decimal();
                 break;
             default:
-                runOperator(userInput);
+                setOperator(userInput);
                 break;
         }
     }
 }
 
 function numberInput(userInput) {
-    if (displayResult) clear();
-    let modNum = numArray.pop();
-    // won't accept input if multiple 0s or too long for display
-    if ((userInput === "0" && modNum === "0")
-            || modNum.length >= 12) {
-        numArray.push(modNum);
+    if (operandInput) {
+        currVal = userInput;
+        operandInput = false;
+    } else if ((userInput === "0" && currVal === "0")
+                || currVal.length >= 12) {
         return;
+    } else if (currVal === "0") {
+        currVal = userInput;
+    } else {
+        currVal += userInput;
     }
-    // replaces 0 if first digit of number
-    if (modNum === "0") modNum = userInput;
-    else modNum += userInput;
-    updateScreen(modNum);
-    // numArray.push(modNum);
-    if (numArray.length >= 1) numArray[1] = modNum;
-    else numArray[0] = modNum;
-    console.log('array after mod ' + numArray);
+    updateScreen();
 }
 
 // checks if most recent array entry is number
 // if so multiplies by -1
 function negative() {
-    // if (!isNaN(numArray[numArray.length - 1])) {
-        let modNum = numArray.pop();
-        modNum = (+modNum * -1).toString();
-        numArray.push(modNum);
-        updateScreen();
-    // }
+    currVal = (+currVal * -1).toString();
+    updateScreen();
 }
 
 function clear() {
-    numArray = ["0"];
+    currVal = "0";
+    xOperand = null;
     operator = null;
-    displayResult = false;
+    operandInput = false;
     printOut(`\xa0`)
     updateScreen();
 }
 
 function del() {
-    // if (!isNaN(numArray[numArray.length - 1])) {
-        let modNum = numArray.pop();
-        if (modNum.length >= 2) modNum = modNum.slice(0, -1);
-        else modNum = "0";
-        numArray.push(modNum);
-        updateScreen();
-    // }
-}
-
-function decimal() {
-    let modNum = numArray.pop();
-    if (!modNum.includes(".")) modNum += ".";
-    numArray.push(modNum);
+    if (currVal.length >= 2) currVal = currVal.slice(0, -1);
+    else currVal = "0";
     updateScreen();
 }
 
-function runOperator(userInput) {
-    if (numArray.length >= 2 || userInput === "eq") {
-        runMath();
-    } else {
-        updateScreen(userInput);
-        printOut(numArray[numArray.length - 1] +
-        " " + userInput);
+function decimal() {
+    if (operandInput) {
+        currVal = "0.";
+        operandInput = false;
     }
-    if (userInput !== "eq") operator = userInput;
-    if (numArray.length == 1) numArray.push("0");
+    if (!currVal.includes(".")) currVal += ".";
+    updateScreen();
 }
 
+function setOperator(userInput) {
+    // if (userInput !== "=") 
+    updateScreen(userInput);
+    // printOut(`${currVal} ${userInput}`);
+    
+    if (xOperand === null) xOperand = currVal;
+    else if (operator) executeOperator();
 
-function runMath() {
-    console.log('before calc ' + operator + " " + numArray);
-    xNum = numArray[numArray.length - 2];
-    yNum = numArray[numArray.length - 1];
-    if (xNum === undefined || yNum === undefined) {
-        updateScreen("ERROR");
-        return;
-    }
-    printOut(yNum + " " + operator + "=");
-    let zNum = calculate(xNum, yNum, operator);
+    operandInput = true;
+    if (!userInput === "eq") operator = userInput;
+}
+
+function executeOperator() {
+    printOut(`${currVal} ${operator}=`);
+    let resultVal = calculate(xOperand, currVal, operator);
 
     // checks if result is over max length of display
-    zNum = parseFloat(zNum.toFixed(8));
-    if (zNum.toString().length >= 12) zNum = zNum.toExponential(6);
-    zNum = zNum.toString()
+    resultVal = parseFloat(resultVal.toFixed(8));
+    if (resultVal.toString().length >= 12) resultVal = resultVal.toExponential(6);
+    resultVal = resultVal.toString()
 
-
-    numArray[0] = zNum;
-    numArray = numArray.slice(0, 2);
-    console.log('after calc ' + numArray);
-    // displayResult = true;
-    updateScreen(zNum);
-    setTimeout(() => {printOut(zNum);}, 250);
+    xOperand = resultVal;
+    updateScreen(resultVal);
+    setTimeout(() => {printOut(resultVal);}, 250);
 }
 
 function calculate(x, y, operator) {
@@ -130,11 +110,12 @@ function calculate(x, y, operator) {
     if (operator === "*") return +x * +y;
     if (operator === "-") return +x - +y;
     if (operator === "+") return +x + +y;
+    if (operator === "eq") return +y;
 }
 
 const screen = document.getElementById('screen');
 function updateScreen(displayText) {
-    if (!displayText) screen.innerText = numArray[numArray.length - 1];
+    if (!displayText) screen.innerText = currVal;
     else screen.innerText = displayText;
 }
 

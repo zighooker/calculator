@@ -80,10 +80,6 @@ body {
     background-color: #eeeee8;
 }
 
-#eq {
-    width: 155px;
-}
-
 .inputButton {
     position: relative;
     top: 0px;
@@ -106,6 +102,10 @@ body {
 .opButton {
     background-color: #485B63;
     color: #fff;
+}
+
+.eqButton {
+    width: 155px;
 }
 
 #clear, #del {
