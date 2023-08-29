@@ -146,3 +146,13 @@ function printOut(printText){
     receiptPaper.setAttribute('style', `height: ${receiptHeight}px`);
 };
 
+window.addEventListener("keydown", function(e) {
+    if (e.code === "Backspace") inputRouting("del");
+    if (e.code === "KeyC") inputRouting("clear");
+    if (e.code === "KeyN") inputRouting("negative");
+    if (e.code === "Period") inputRouting("decimal");
+    if (e.code === "Enter" || e.code == "Equal") inputRouting("eq");
+    if (e.code === "Slash") inputRouting("÷");
+    if (e.code === "KeyX") inputRouting("*");
+    if ("1234567890*-+".includes(e.key)) inputRouting(e.key);
+})
