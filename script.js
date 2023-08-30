@@ -4,6 +4,7 @@ let xOperand = null;
 let operandInput = false;
 let secondInput = false;
 let resultShown = false;
+let queueNegative = false;
 
 // sets up buttons with listeners
 const inputButtons = Array.from(document.getElementsByClassName('inputButton'));
@@ -43,11 +44,11 @@ function inputRouting(userInput) {
 }
 
 function numberInput(userInput) {
-    // clears if a previous calculation is still showing
+    // auto clears if a previous result is still showing
     if (resultShown) {
         clear();
         currVal = userInput;
-    // switches over to second operand
+    // switches over to second operand if operator submitted
     } else if (operandInput) {
         currVal = userInput;
         secondInput = true;
@@ -56,31 +57,44 @@ function numberInput(userInput) {
     } else if ((userInput === "0" && currVal === "0")
         || currVal.length >= 10) {
             return;
-    // replaces default 0 with user input
+    // replaces default 0 with first digit
     } else if (currVal === "0") {
         currVal = userInput;
     // appends user input onto string
     } else {
         currVal += userInput;
     }
+
+    // checks if user hit negative button before first digit
+    if (queueNegative) {
+        negative();
+        queueNegative = false;
+    }
     updateScreen();
 }
 
-// multiplies current operand by -1
+function decimal() {
+    // lets users start an operand with .
+    if (operandInput) {
+        currVal = "0.";
+        operandInput = false;
+    }
+    // forbids more than one . per operand
+    if (!currVal.includes(".")) currVal += ".";
+    updateScreen();
+}
+
 function negative() {
+    // lets users input negative directly after operator
+    if (operandInput) {
+        currVal = "0";
+        operandInput = false;
+    }
+    // lets users make a number negative before entering it
+    if (currVal === "0") queueNegative = true;
+   
+    // multiplies current operand by -1
     currVal = (+currVal * -1).toString();
-    updateScreen();
-}
-
-//  resets all variables and booleans
-function clear() {
-    currVal = "0";
-    xOperand = null;
-    operator = null;
-    operandInput = false;
-    secondInput = false;
-    resultShown = false;
-    printOut(`\xa0`)
     updateScreen();
 }
 
@@ -93,43 +107,35 @@ function del() {
         updateScreen();
         return;
     }
-    // cuts the last digit off current number
+    // cuts the last digit off current operand
     if (currVal.length >= 2) currVal = currVal.slice(0, -1);
     else currVal = "0";
     updateScreen();
 }
 
-function decimal() {
-    // lets users start an operand with .
-    if (operandInput) {
-        currVal = "0.";
-        operandInput = false;
-    }
-    if (resultShown) {
-        clear();
-        currVal = "0.";
-    }
-    // forbids more than one . per operand
-    if (!currVal.includes(".")) currVal += ".";
-    updateScreen();
-}
-
+// handles operator input
 function setOperator(userInput) {
-    // lets user change operator
+    // lets user change their mind when inputting operators
     if (operator && operandInput) {
         operator = userInput;
         updateScreen(`${currVal}${userInput}`);
         return;
     }
 
-    updateScreen(`${currVal}${userInput}`);
-    
     // if no operand is set, assigns currVal to xOperand
     if (xOperand === null) {
         xOperand = currVal;
         printOut(xOperand);
+        updateScreen(`${currVal}${userInput}`);
+    // allows chaining operations
+    } else if (resultShown) {
+        resultShown = false;
+        updateScreen(`${xOperand}${userInput}`);
+    } else if (operator) {
+        executeOperator();
+        resultShown = false;
+        updateScreen(`${xOperand}${userInput}`);
     }
-    else if (operator) executeOperator();
 
     // assigns input as operator
     operandInput = true;
@@ -137,6 +143,7 @@ function setOperator(userInput) {
 }
 
 function executeOperator() {
+    // formatting check for receipt print
     if (operator) printOut(`${currVal} ${operator}=`);
     else printOut(`${currVal} =`);
 
@@ -147,12 +154,10 @@ function executeOperator() {
     if (resultVal.toString().length >= 12) 
         resultVal = resultVal.toExponential(6);
 
-    
-    resultVal = resultVal.toString();
-    xOperand = resultVal;
+    xOperand = resultVal.toString();
     resultShown = true;
-    updateScreen(resultVal);
-    printOut(resultVal);
+    updateScreen(xOperand);
+    printOut(xOperand);
 }
 
 function calculate(x, y, operator) {
@@ -170,7 +175,7 @@ function updateScreen(displayText) {
     else screen.innerText = displayText;
 }
 
-// adds new p element to html and increments height of receipt element
+// creates new html elements for receipt print
 const receiptPaper = document.querySelector('.receiptPaper');
 function printOut(printText){
     const newLine = document.createElement('p');
@@ -179,6 +184,19 @@ function printOut(printText){
     let receiptHeight = receiptPaper.offsetHeight + 26;
     receiptPaper.setAttribute('style', `height: ${receiptHeight}px`);
 };
+
+//  resets all variables and booleans
+function clear() {
+    currVal = "0";
+    xOperand = null;
+    operator = null;
+    operandInput = false;
+    secondInput = false;
+    resultShown = false;
+    queueNegative = false;
+    printOut(`\xa0`)
+    updateScreen();
+}
 
 // optional keyboard input listeners
 window.addEventListener("keydown", function(e) {

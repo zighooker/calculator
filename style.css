@@ -19,6 +19,7 @@ body {
     justify-content: center;
 }
 
+/* absolute position locked to top of calculator */
 .receiptPaper {
     z-index: -1;
     position: absolute;
