@@ -30,7 +30,6 @@ body {
     border-bottom: 5px solid #000;
     padding-top: 3px;
     padding-right: 10px;
-    transition: all 250ms ease;
 }
 
 .receiptPaper > p {
